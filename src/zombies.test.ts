@@ -37,7 +37,11 @@ test("room with no capacity cannot fit any zombies", () => {
   ok(room.getAll().length === 0);
 });
 
-test.skip("one-roomer becomes full when a zombie is added", () => {});
+test("one-roomer becomes full when a zombie is added", () => {
+  const room = createRoom(1);
+  room.add("A");
+  ok(room.isFull());
+});
 
 test.skip("two-roomer is not full when a zombie is added", () => {});
 
