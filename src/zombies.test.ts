@@ -44,11 +44,24 @@ test("one-roomer becomes full when a zombie is added", () => {
 });
 
 test("two-roomer is not full when a zombie is added", () => {
+  // arrange
   const room = createRoom(2);
+  // act
   room.add("A");
+  // assert 
   ok(!room.isFull());
 });
 
-test.skip("second zombie consumes first zombie when added to a one-roomer", () => {});
+test("second zombie consumes first zombie when added to a one-roomer", () => {
+  // arrange
+  const room = createRoom(1);
+  // act
+  room.add("A");
+  room.add("B");
+  const all = room.getAll();
+  // assert
+  ok(all.length === 1);
+  ok(all[0] === "B");
+});
 
 // You are free to add more tests that you think are relevant!
