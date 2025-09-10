@@ -2,10 +2,16 @@ import { ok } from "node:assert/strict";
 import { test } from "node:test";
 
 const createRoom = (capacity: number) => {
-  const _capacity = capacity;
+  let zombies: string [] = [];
 
   return {
-    isFull: () => true,
+    isFull: () => zombies.length >= capacity,
+    add: (name: string) => {
+      if (capacity === 0) return;
+      if (zombies.length >= capacity) zombies.shift(); // eat oldest
+      zombies.push(name);
+    },
+    getAll: () => [...zombies],
   };
 };
 
@@ -17,14 +23,45 @@ test("room is full", () => {
   ok(isRoomFull);
 });
 
-test.skip("empty room that fits one zombie is not full", () => {});
+test("empty room that fits one zombie is not full", () => {
+  // arrange
+  const room = createRoom(1);
+  // act
+  // assert
+  ok(!room.isFull());
+});
 
-test.skip("room with no capacity cannot fit any zombies", () => {});
+test("room with no capacity cannot fit any zombies", () => {
+  const room = createRoom(0);
+  room.add("A");
+  ok(room.getAll().length === 0);
+});
 
-test.skip("one-roomer becomes full when a zombie is added", () => {});
+test("one-roomer becomes full when a zombie is added", () => {
+  const room = createRoom(1);
+  room.add("A");
+  ok(room.isFull());
+});
 
-test.skip("two-roomer is not full when a zombie is added", () => {});
+test("two-roomer is not full when a zombie is added", () => {
+  // arrange
+  const room = createRoom(2);
+  // act
+  room.add("A");
+  // assert 
+  ok(!room.isFull());
+});
 
-test.skip("second zombie consumes first zombie when added to a one-roomer", () => {});
+test("second zombie consumes first zombie when added to a one-roomer", () => {
+  // arrange
+  const room = createRoom(1);
+  // act
+  room.add("A");
+  room.add("B");
+  const all = room.getAll();
+  // assert
+  ok(all.length === 1);
+  ok(all[0] === "B");
+});
 
 // You are free to add more tests that you think are relevant!
