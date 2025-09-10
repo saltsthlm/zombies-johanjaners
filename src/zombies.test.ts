@@ -2,22 +2,33 @@ import { ok } from "node:assert/strict";
 import { test } from "node:test";
 
 const createRoom = (capacity: number) => {
-  const _capacity = capacity;
+  let zombies: string [] = [];
 
   return {
-    isFull: () => true,
+    isFull: () => zombies.length >= capacity,
+    add: (name: string) => {
+      if (capacity === 0) return;
+      if (zombies.length >= capacity) zombies.shift(); // eat oldest
+      zombies.push(name);
+    },
+    getAll: () => [...zombies],
   };
 };
 
 test("room is full", () => {
   const room = createRoom(0);
-
   const isRoomFull = room.isFull();
-
   ok(isRoomFull);
 });
 
-test.skip("empty room that fits one zombie is not full", () => {});
+
+test("empty room that fits one zombie is not full", () => {
+  // arrange
+  const room = createRoom(1);
+  // act
+  // assert
+  ok(!room.isFull());
+});
 
 test.skip("room with no capacity cannot fit any zombies", () => {});
 
